@@ -2,17 +2,17 @@ FROM runpod/worker-comfyui:5.8.5-base
 
 WORKDIR /comfyui
 
-# System dependencies for MMAudio + video
+# System dependencies
 RUN apt-get update && apt-get install -y \
     ffmpeg \
     libsndfile1 \
     espeak-ng \
     && rm -rf /var/lib/apt/lists/*
 
-# Clone each custom node separately (much more reliable + faster with --depth 1)
+# Clone each node separately (more reliable)
 RUN git clone --depth 1 https://github.com/kijai/ComfyUI-MMAudio.git custom_nodes/ComfyUI-MMAudio
 RUN git clone --depth 1 https://github.com/kijai/ComfyUI-WanVideoWrapper.git custom_nodes/ComfyUI-WanVideoWrapper
-RUN git clone --depth 1 https://github.com/Comfy-Org/ComfyUI-GGUF.git custom_nodes/ComfyUI-GGUF
+RUN git clone --depth 1 https://github.com/city96/ComfyUI-GGUF.git custom_nodes/ComfyUI-GGUF
 RUN git clone --depth 1 https://github.com/chrisgoringe/cg-use-everywhere.git custom_nodes/cg-use-everywhere
 RUN git clone --depth 1 https://github.com/mikemikemikemike/mikey_nodes.git custom_nodes/mikey_nodes
 RUN git clone --depth 1 https://github.com/Kosinkadink/ComfyUI-VideoHelperSuite.git custom_nodes/ComfyUI-VideoHelperSuite
@@ -22,7 +22,7 @@ RUN git clone --depth 1 https://github.com/princepainter/ComfyUI-PainterI2Vadvan
 RUN git clone --depth 1 https://github.com/jamesWalker55/comfyui-various.git custom_nodes/comfyui-various
 RUN git clone --depth 1 https://github.com/pythongosssss/ComfyUI-Custom-Scripts.git custom_nodes/ComfyUI-Custom-Scripts
 
-# Install requirements (MMAudio is the tricky one)
+# Install requirements
 RUN cd custom_nodes/ComfyUI-MMAudio && pip install -r requirements.txt && \
     cd ../ComfyUI-WanVideoWrapper && pip install -r requirements.txt || true && \
     cd ../ComfyUI-GGUF && pip install -r requirements.txt || true && \
@@ -35,7 +35,7 @@ RUN cd custom_nodes/ComfyUI-MMAudio && pip install -r requirements.txt && \
     cd ../comfyui-various && pip install -r requirements.txt || true && \
     cd ../ComfyUI-Custom-Scripts && pip install -r requirements.txt || true
 
-# Create model folders on the volume
+# Create model folders
 RUN mkdir -p models/diffusion_models models/loras models/mmaudio models/upscale_models models/vae
 
 RUN pip cache purge
